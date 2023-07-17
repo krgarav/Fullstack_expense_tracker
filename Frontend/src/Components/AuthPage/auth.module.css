@@ -1,5 +1,22 @@
-.formBox{
-    background-color: rgb(116, 116, 133);
-    padding: 10px 50px;
-    border-radius: 15px;
+.formBox {
+  background-color: rgb(116, 116, 133);
+  padding: 10px 50px;
+  border-radius: 5px;
+  /* text-align: center; */
+}
+.formBox h3{
+    text-align: center;
+    /* font-size: 30px; */
+}
+.toggler {
+    border: 1px solid black;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  margin-top:  10px; ;
+
+}
+.toggler:hover{
+    color: blue;
+    text-decoration: underline;
 }
