@@ -11,20 +11,18 @@ const Auth = () => {
   };
   const submitHandler = (event) => {
     event.preventDefault();
-    const enteredName = event.target.formBasicName.value;
-    const enteredEmail = event.target.formBasicEmail.value;
-    const enteredPassword = event.target.formBasicPassword.value;
-    const obj = {
-      name: enteredName,
-      email: enteredEmail,
-      password: enteredPassword,
-    };
-    if (state) {
+     if (state) {
+      const enteredEmail = event.target.formBasicEmail.value;
+      const enteredPassword = event.target.formBasicPassword.value;
+      const loginObj = {
+        email: enteredEmail,
+        password: enteredPassword,
+      };
       const postLoginData = async () => {
         try {
           const response = await fetch("http://localhost:3000/user/login", {
             method: "POST",
-            body: JSON.stringify(obj),
+            body: JSON.stringify(loginObj),
             headers: {
               "Content-Type": "application/json",
             },
@@ -33,7 +31,7 @@ const Auth = () => {
           if (data.error) {
             throw new Error(data.error);
           } else {
-            alert("Successfully Signed up");
+            alert(data.data);
           }
         } catch (err) {
           alert(err.message);
@@ -41,6 +39,14 @@ const Auth = () => {
       };
       postLoginData();
     } else {
+      const enteredName = event.target.formBasicName.value;
+      const enteredEmail = event.target.formBasicEmail.value;
+      const enteredPassword = event.target.formBasicPassword.value;
+      const obj = {
+        name: enteredName,
+        email: enteredEmail,
+        password: enteredPassword,
+      };
       const postSignupData = async () => {
         try {
           const response = await fetch("http://localhost:3000/user/signup", {
