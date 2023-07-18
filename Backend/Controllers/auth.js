@@ -1,9 +1,10 @@
 const User = require("../Models/user")
-
+const bcrypt = require("bcrypt")
 exports.authSignupPost = (req, res, next) => {
     const name = req.body.name
     const email = req.body.email
     const password = req.body.password
+
 
     const postSignup = async () => {
         try {
@@ -12,9 +13,14 @@ exports.authSignupPost = (req, res, next) => {
             if (userExists) {
                 return res.status(301).json({ error: "Email id already exists" });
             }
+            bcrypt.hash(password, 10, async (err, hash) => {
+                if (err) {
+                    throw new Error(err)
+                }
+                await User.create({ name, email, password: hash });
+                res.status(200).json({ data: "success" });
+            })
 
-            await User.create({ name, email, password });
-            res.status(200).json({ data: "success" });
         } catch (err) {
             console.log(err);
         }
@@ -34,16 +40,22 @@ exports.authLoginPost = (req, res, next) => {
                 return user.email === enteredEmail;
             });
             if (userExists) {
-                if (password === enteredPassword) {
-                    return res.status(200).json({ data: "user successfully logged in" });
+                bcrypt.compare(enteredPassword, password, (err, result) => {
+                    if(err){
+                        throw new Error(err)
+                    }
+                    if (!err) {
+                       res.status(200).json({ data: "user successfully logged in" });
 
-                } else {
-                    return res.status(401).json({ error: "Entered password is wrong" });
-                }
+                   } else {
+                        res.status(401).json({ error: "Entered password is wrong" });
+                    }
+                })
+
             } else {
-                return res.status(404).json({ error: "Email id  does not exists" });
+                res.status(404).json({ error: "Email id  does not exists" });
             }
-            
+
         } catch (err) {
             console.log(err);
         }

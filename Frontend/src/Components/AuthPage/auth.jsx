@@ -1,22 +1,33 @@
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import classes from "./auth.module.css";
+
 const Auth = () => {
   const [state, setState] = useState(true);
-
+  const enteredEmail = useRef();
+  const enteredName = useRef();
+  const enteredPassword = useRef();
   const stateHandler = () => {
+    if (state) {
+      enteredEmail.current.value = "";
+      enteredPassword.current.value = "";
+    } else {
+      enteredName.current.value = "";
+      enteredEmail.current.value = "";
+      enteredPassword.current.value = "";
+    }
     setState((prev) => {
       return !prev;
     });
   };
   const submitHandler = (event) => {
     event.preventDefault();
-     if (state) {
-      const enteredEmail = event.target.formBasicEmail.value;
-      const enteredPassword = event.target.formBasicPassword.value;
+    if (state) {
+      const Email = enteredEmail.current.value;
+      const Password = enteredPassword.current.value;
       const loginObj = {
-        email: enteredEmail,
-        password: enteredPassword,
+        email: Email,
+        password: Password,
       };
       const postLoginData = async () => {
         try {
@@ -39,13 +50,13 @@ const Auth = () => {
       };
       postLoginData();
     } else {
-      const enteredName = event.target.formBasicName.value;
-      const enteredEmail = event.target.formBasicEmail.value;
-      const enteredPassword = event.target.formBasicPassword.value;
+      const Name = enteredName.current.value;
+      const Email = enteredEmail.current.value;
+      const Password = enteredPassword.current.value;
       const obj = {
-        name: enteredName,
-        email: enteredEmail,
-        password: enteredPassword,
+        name: Name,
+        email: Email,
+        password: Password,
       };
       const postSignupData = async () => {
         try {
@@ -77,17 +88,32 @@ const Auth = () => {
           {!state && (
             <Form.Group className="mb-3" controlId="formBasicName">
               <Form.Label>Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter your name" />
+              <Form.Control
+                type="text"
+                placeholder="Enter your name"
+                ref={enteredName}
+                required
+              />
             </Form.Group>
           )}
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" />
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              ref={enteredEmail}
+              required
+            />
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              ref={enteredPassword}
+              required
+            />
           </Form.Group>
 
           <Button variant="primary" type="submit">

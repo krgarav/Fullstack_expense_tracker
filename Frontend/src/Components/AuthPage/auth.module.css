@@ -4,19 +4,18 @@
   border-radius: 5px;
   /* text-align: center; */
 }
-.formBox h3{
-    text-align: center;
-    margin-bottom: 20px;
+.formBox h3 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 .toggler {
-    border: 1px solid black;
+  border: 1px solid black;
   cursor: pointer;
   border-radius: 5px;
   text-align: center;
-  margin-top:  10px; ;
-
+  margin-top: 10px;
 }
-.toggler:hover{
-    color: blue;
-    text-decoration: underline;
+.toggler:hover {
+  color: blue;
+  text-decoration: underline;
 }
