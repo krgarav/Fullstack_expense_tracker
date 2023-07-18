@@ -6,7 +6,7 @@
 }
 .formBox h3{
     text-align: center;
-    /* font-size: 30px; */
+    margin-bottom: 20px;
 }
 .toggler {
     border: 1px solid black;

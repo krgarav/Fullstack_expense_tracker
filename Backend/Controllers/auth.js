@@ -1,36 +1,27 @@
 const User = require("../Models/user")
 
-exports.authPostData = (req, res, next) => {
+exports.authSignupPost = (req, res, next) => {
     const name = req.body.name
     const email = req.body.email
     const password = req.body.password
-    // console.log(name, email, password);
-    User.findAll()
-        .then((users) => {
-            if (users.length > 0) {
-                let count = 0
-                users.forEach((user) => {
-                    if (user.email === email) {
-                        count = 1;
-                    }
-                })
-                if (count) {
-                    return res.status(301).json({ error: "Email id already exists" });
 
-                } else {
-                    return User.create({ name, email, password });
-                }
-
-            } else {
-                console.log("entered")
-                return User.create({ name, email, password });
+    const postSignup = async () => {
+        try {
+            const users = await User.findAll();
+            const userExists = users.find((user) => user.email === email);
+            if (userExists) {
+                return res.status(301).json({ error: "Email id already exists" });
             }
-        })
-        .then(() => {
-            res.status(200).json({ data: "success" })
-        })
-        .catch((err) => {
-            console.log(err)
-        })
+
+            await User.create({ name, email, password });
+            res.status(200).json({ data: "success" });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    postSignup();
+}
+
+exports.authLoginPost = (req, res, next) => {
 
 }

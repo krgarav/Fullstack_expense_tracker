@@ -8,7 +8,6 @@ const Auth = () => {
     setState((prev) => {
       return !prev;
     });
-    console.log(state);
   };
   const submitHandler = (event) => {
     event.preventDefault();
@@ -20,33 +19,61 @@ const Auth = () => {
       email: enteredEmail,
       password: enteredPassword,
     };
-    const postData = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/user/signup", {
-          method: "POST",
-          body: JSON.stringify(obj),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json()
-        console.log(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    postData();
+    if (state) {
+      const postLoginData = async () => {
+        try {
+          const response = await fetch("http://localhost:3000/user/login", {
+            method: "POST",
+            body: JSON.stringify(obj),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await response.json();
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            alert("Successfully Signed up");
+          }
+        } catch (err) {
+          alert(err.message);
+        }
+      };
+      postLoginData();
+    } else {
+      const postSignupData = async () => {
+        try {
+          const response = await fetch("http://localhost:3000/user/signup", {
+            method: "POST",
+            body: JSON.stringify(obj),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await response.json();
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            alert("Successfully Signed up");
+          }
+        } catch (err) {
+          alert(err.message);
+        }
+      };
+      postSignupData();
+    }
   };
   return (
     <Fragment>
       <div className={classes.formBox}>
         <h3>{state ? "Login" : "Signup"}</h3>
         <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3" controlId="formBasicName">
-            <Form.Label>Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter your name" />
-          </Form.Group>
-
+          {!state && (
+            <Form.Group className="mb-3" controlId="formBasicName">
+              <Form.Label>Name</Form.Label>
+              <Form.Control type="text" placeholder="Enter your name" />
+            </Form.Group>
+          )}
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control type="email" placeholder="Enter email" />
@@ -63,18 +90,8 @@ const Auth = () => {
         </Form>
       </div>
       <div>
-        <p
-          onCopy={(e) => {
-            return e.preventDefault();
-          }}
-          onSelectStart={(e) => {
-            return e.preventDefault();
-          }}
-          className={classes.toggler}
-          onClick={stateHandler}
-          contentEditable={false}
-        >
-          Existing user - Login
+        <p className={classes.toggler} onClick={stateHandler}>
+          {state ? "New -user Signup" : "Existing user - Login"}
         </p>
       </div>
     </Fragment>
