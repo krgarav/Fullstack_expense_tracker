@@ -39,15 +39,17 @@ exports.authLoginPost = (req, res, next) => {
                 password = user.password;
                 return user.email === enteredEmail;
             });
+
             if (userExists) {
                 bcrypt.compare(enteredPassword, password, (err, result) => {
-                    if(err){
+                    if (err) {
                         throw new Error(err)
                     }
-                    if (!err) {
-                       res.status(200).json({ data: "user successfully logged in" });
 
-                   } else {
+                    if (result === true) {
+                        res.status(200).json({ data: "user successfully logged in" });
+
+                    } else {
                         res.status(401).json({ error: "Entered password is wrong" });
                     }
                 })

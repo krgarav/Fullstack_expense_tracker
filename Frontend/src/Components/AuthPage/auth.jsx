@@ -1,8 +1,10 @@
 import { Fragment, useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import classes from "./auth.module.css";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [state, setState] = useState(true);
   const enteredEmail = useRef();
   const enteredName = useRef();
@@ -43,6 +45,7 @@ const Auth = () => {
             throw new Error(data.error);
           } else {
             alert(data.data);
+            navigate("/expenses", { replace: true });
           }
         } catch (err) {
           alert(err.message);

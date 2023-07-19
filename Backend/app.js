@@ -4,6 +4,7 @@ const cors = require("cors")
 const app = express();
 
 const authRoutes = require("./Routes/auth");
+const expenseRoutes = require("./Routes/expense");
 const sequelize = require("./Util/database")
 
 app.use(bodyParser.json({ limit: '1mb' }))
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors())
 
 app.use("/user/", authRoutes);
+app.use("/expense/", expenseRoutes);
 
 sequelize.sync().then(() => {
   app.listen(3000, () => {
