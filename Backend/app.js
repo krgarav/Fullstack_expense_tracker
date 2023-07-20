@@ -5,7 +5,9 @@ const app = express();
 
 const authRoutes = require("./Routes/auth");
 const expenseRoutes = require("./Routes/expense");
-const sequelize = require("./Util/database")
+const sequelize = require("./Util/database");
+const User = require("./Models/user");
+const Expense = require("./Models/expense");
 
 app.use(bodyParser.json({ limit: '1mb' }))
 
@@ -15,7 +17,13 @@ app.use(cors())
 app.use("/user/", authRoutes);
 app.use("/expense/", expenseRoutes);
 
-sequelize.sync().then(() => {
+User.hasMany(Expense);
+Expense.belongsTo(User);
+
+sequelize
+// .sync({force:true})
+.sync()
+.then(() => {
   app.listen(3000, () => {
     console.log("Server is running on port 3000");
   });

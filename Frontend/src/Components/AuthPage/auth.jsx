@@ -24,7 +24,7 @@ const Auth = () => {
   };
   const submitHandler = (event) => {
     event.preventDefault();
-    if (state) {
+    if (state) {  //login
       const Email = enteredEmail.current.value;
       const Password = enteredPassword.current.value;
       const loginObj = {
@@ -44,6 +44,7 @@ const Auth = () => {
           if (data.error) {
             throw new Error(data.error);
           } else {
+            localStorage.setItem("token",data.token);
             alert(data.data);
             navigate("/expenses", { replace: true });
           }

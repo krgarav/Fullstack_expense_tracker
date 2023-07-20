@@ -1,11 +1,10 @@
 const User = require("../Models/user")
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 exports.authSignupPost = (req, res, next) => {
     const name = req.body.name
     const email = req.body.email
     const password = req.body.password
-
-
     const postSignup = async () => {
         try {
             const users = await User.findAll();
@@ -28,26 +27,32 @@ exports.authSignupPost = (req, res, next) => {
     postSignup();
 }
 
+function generateToken(id, name) {
+    return jwt.sign({ userid: id, name: name }, "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
+}
+
 exports.authLoginPost = (req, res, next) => {
     const enteredEmail = req.body.email;
     const enteredPassword = req.body.password;
     const postLogin = async () => {
         try {
-            let password = "";
+
             const users = await User.findAll();
             const userExists = users.find((user) => {
-                password = user.password;
                 return user.email === enteredEmail;
             });
 
             if (userExists) {
-                bcrypt.compare(enteredPassword, password, (err, result) => {
+                bcrypt.compare(enteredPassword, userExists.password, (err, result) => {
                     if (err) {
                         throw new Error(err)
                     }
 
                     if (result === true) {
-                        res.status(200).json({ data: "user successfully logged in" });
+                        res.status(200).json({
+                            data: "user successfully logged in",
+                            token: generateToken(userExists.id, userExists.name)
+                        });
 
                     } else {
                         res.status(401).json({ error: "Entered password is wrong" });

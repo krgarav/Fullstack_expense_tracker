@@ -1,15 +1,23 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
+import { Button } from "react-bootstrap";
 import "./expense.css";
+import { useNavigate } from "react-router";
 const Expense = () => {
   const [data, setData] = useState([]);
   const [state, setState] = useState(true);
+  const navigate = useNavigate();
   const amountRef = useRef();
   const descriptionRef = useRef();
   const categoryRef = useRef();
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        "http://localhost:3000/expense/get-expenses"
+        "http://localhost:3000/expense/get-expenses",
+        {
+          headers: { Authorisation: token },
+        }
       );
       const data = await response.json();
       setData(data);
@@ -30,23 +38,28 @@ const Expense = () => {
     };
   }, [state]);
   const editHandler = (e) => {
-    const amount=e.amount;
-    const description=e.description;
+    const amount = e.amount;
+    const description = e.description;
     const category = e.category;
-    const id=e.id
+    const id = e.id;
     const update = async () => {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        "http://localhost:3000/expense/delete-expense/" +id,
+        "http://localhost:3000/expense/delete-expense/" + id,
         {
           method: "DELETE",
+          headers: {
+            Authorisation: token,
+          },
         }
       );
 
       if (response.ok) {
         amountRef.current.focus();
-        amountRef.current.value=amount;
-        descriptionRef.current.value=description;
-        categoryRef.current.value=category;
+        amountRef.current.value = amount;
+        descriptionRef.current.value = description;
+        categoryRef.current.value = category;
         setState((prev) => !prev);
       } else {
         console.error("Error occured");
@@ -54,15 +67,18 @@ const Expense = () => {
       }
     };
     update();
-
-    // console.log(e);
   };
   const deleteHandler = (e) => {
     const deleteProduct = async () => {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
         "http://localhost:3000/expense/delete-expense/" + e,
         {
           method: "DELETE",
+          headers: {
+            Authorisation: token,
+          },
         }
       );
       if (response.ok) {
@@ -84,7 +100,7 @@ const Expense = () => {
           <p> {item.category} </p>
         </span>
         <span className="box-div">
-          <button onClick={()=>editHandler(item)}> Edit</button>
+          <button onClick={() => editHandler(item)}> Edit</button>
         </span>
         <span className="box-div">
           <button className="btn-danger" onClick={() => deleteHandler(item.id)}>
@@ -106,7 +122,7 @@ const Expense = () => {
       description: enteredDescription,
       category: enteredCategory,
     };
-    console.log(obj);
+    const token = localStorage.getItem("token");
     const postData = async () => {
       const response = await fetch(
         "http://localhost:3000/expense/add-expense",
@@ -115,6 +131,7 @@ const Expense = () => {
           body: JSON.stringify(obj),
           headers: {
             "Content-Type": "application/json",
+            Authorisation: token,
           },
         }
       );
@@ -127,10 +144,15 @@ const Expense = () => {
     event.target.pcategory.value = "";
     event.target.pqty.value = "";
   };
-
+  const logoutHandler = () => {
+    localStorage.removeItem("token");
+    navigate("/", { replace: true });
+  };
   return (
     <Fragment>
       <div className="formdiv">
+        <Button onClick={logoutHandler}>Logout</Button>
+
         <h1>Expense Tracker</h1>
         <form onSubmit={submitHandler}>
           <label htmlFor="pqty">Choose Expense Amount : </label>
