@@ -45,6 +45,7 @@ const Auth = () => {
             throw new Error(data.error);
           } else {
             localStorage.setItem("token",data.token);
+            localStorage.setItem("userStatus",data.ispremiumuser);
             alert(data.data);
             navigate("/expenses", { replace: true });
           }
@@ -86,6 +87,8 @@ const Auth = () => {
   };
   return (
     <Fragment>
+      <div className={classes.parent}>
+
       <div className={classes.formBox}>
         <h3>{state ? "Login" : "Signup"}</h3>
         <Form onSubmit={submitHandler}>
@@ -130,6 +133,8 @@ const Auth = () => {
           {state ? "New -user Signup" : "Existing user - Login"}
         </p>
       </div>
+      </div>
+
     </Fragment>
   );
 };

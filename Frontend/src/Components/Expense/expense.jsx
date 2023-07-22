@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import "./expense.css";
 import { useNavigate } from "react-router";
+import Header from "../Header/header";
 const Expense = () => {
   const [data, setData] = useState([]);
   const [state, setState] = useState(true);
@@ -144,16 +145,11 @@ const Expense = () => {
     event.target.pcategory.value = "";
     event.target.pqty.value = "";
   };
-  const logoutHandler = () => {
-    localStorage.removeItem("token");
-    navigate("/", { replace: true });
-  };
+
   return (
     <Fragment>
+      <Header />
       <div className="formdiv">
-        <Button onClick={logoutHandler}>Logout</Button>
-
-        <h1>Expense Tracker</h1>
         <form onSubmit={submitHandler}>
           <label htmlFor="pqty">Choose Expense Amount : </label>
           <input

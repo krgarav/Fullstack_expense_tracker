@@ -51,7 +51,8 @@ exports.authLoginPost = (req, res, next) => {
                     if (result === true) {
                         res.status(200).json({
                             data: "user successfully logged in",
-                            token: generateToken(userExists.id, userExists.name)
+                            token: generateToken(userExists.id, userExists.name),
+                            ispremiumuser: userExists.ispremiumuser,
                         });
 
                     } else {

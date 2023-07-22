@@ -47,3 +47,12 @@
   font-weight: 500;
   color-scheme: light dark;
 }
+.logoutBtn{
+  width: 100%;
+  margin: 10px;
+}
+.logoutBtn Button{
+  width: 100%;
+  float: right;
+
+}

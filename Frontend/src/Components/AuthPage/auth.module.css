@@ -1,8 +1,9 @@
+
 .formBox {
   background-color: rgb(116, 116, 133);
   padding: 10px 50px;
   border-radius: 5px;
-  /* text-align: center; */
+
 }
 .formBox h3 {
   text-align: center;
@@ -18,4 +19,9 @@
 .toggler:hover {
   color: blue;
   text-decoration: underline;
+}
+.parent {
+  display: block;
+  justify-content: center;
+  margin: 20vh 40vw;
 }
