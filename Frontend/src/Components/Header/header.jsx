@@ -3,12 +3,14 @@ import classes from "./header.module.css";
 import { Nav, Container, Button, Navbar, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import LeaderBoard from "../Models/leaderboard";
 
 const Header = () => {
   const [state, setState] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
+  const [users,setUsers]=useState([])
   useEffect(() => {
     const status = localStorage.getItem("userStatus");
-
     if (status === "true") {
       setState(true);
     }
@@ -19,7 +21,6 @@ const Header = () => {
     localStorage.removeItem("token");
     navigate("/", { replace: true });
   };
-  // console.log(state);
   const premiumHandler = () => {
     const token = localStorage.getItem("token");
     const getPremium = async () => {
@@ -46,6 +47,7 @@ const Header = () => {
           );
 
           alert("you are premium user now");
+          setState(true);
         },
       };
       const rzpl = new Razorpay(options);
@@ -57,6 +59,18 @@ const Header = () => {
       });
     };
     getPremium();
+  };
+  const leaderboardHandler = () => {
+   
+    const getData = async () => {
+      const res = await axios.get(
+        "http://localhost:3000/purchase/premium/showLeaderBoard"
+      );
+      console.log(res.data);
+      setUsers(res.data)
+      setModalShow(true);
+    };
+    getData();
   };
   return (
     <Fragment>
@@ -89,7 +103,12 @@ const Header = () => {
                 </Button>
               )}
 
-              {state && <Button variant="info">You are premium user</Button>}
+              {state && (
+                <Button variant="info">
+                  You are premium user{" "}
+                  <Button onClick={leaderboardHandler}>Show LeaderBoard</Button>{" "}
+                </Button>
+              )}
               <Button variant="outline-warning" onClick={logoutHandler}>
                 Logout
               </Button>
@@ -98,6 +117,7 @@ const Header = () => {
         </Container>
       </Navbar>
       <h1 className={classes.header}>Expense Tracker</h1>
+      <LeaderBoard show={modalShow} item={users} onHide={() => setModalShow(false)}/>
     </Fragment>
   );
 };
