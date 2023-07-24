@@ -16,7 +16,7 @@ exports.authSignupPost = (req, res, next) => {
                 if (err) {
                     throw new Error(err)
                 }
-                await User.create({ name, email, password: hash });
+                await User.create({ name, email, password: hash, totalExpense: 0, ispremiumuser: 0 });
                 res.status(200).json({ data: "success" });
             })
 

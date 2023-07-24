@@ -1,11 +1,15 @@
 const Expense = require("../Models/expense");
+const User = require("../Models/user");
 
 exports.postExpense = (req, res, next) => {
     const { quantity, description, category } = req.body;
 
 
     const postData = async () => {
-        await req.user.createExpense({ amount: quantity, description, category })
+        const totalAmount = req.user.totalExpense += +quantity;
+        await req.user.update({ totalExpense: totalAmount })
+
+        await req.user.createExpense({ amount: quantity, description, category });
         res.status(200).json({ message: "Expense Created" });
     }
     postData();
