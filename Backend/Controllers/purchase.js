@@ -2,6 +2,7 @@ const Razorpay = require("razorpay");
 const Order = require("../Models/order");
 const User = require("../Models/user");
 const Expense = require("../Models/expense");
+const sequelize = require("../Util/database");
 const purchasePremium = async (req, res) => {
     try {
         let rzp = new Razorpay({
@@ -40,31 +41,23 @@ const updateStatus = async (req, res) => {
 
 const showLeaderBoard = async (req, res) => {
     try {
-        const obj = [];
-        const users = await User.findAll();
-        const allData = async () => {
-            for (const user of users) {
-                let expensesSum = 0;
-                const expenses = await Expense.findAll({ where: { userId: user.id } });
-                expenses.forEach((expense) => {
-                    expensesSum += expense.amount;
-                });
-
-                let createdObj = { id: user.id, name: user.name, totalExpense: expensesSum };
-                obj.push(createdObj);
-            }
-            let n = obj.length;
-            while (n > 0) {
-                for (let i = 0; i < obj.length - 1; i++) {
-                    if (obj[i].totalExpense < obj[i + 1].totalExpense) {
-                        [obj[i], obj[i + 1]] = [obj[i + 1], obj[i]]
-                    }
-                }
-                n--;
-            }
-            res.json(obj);
-        };
-        allData();
+        // const users = await User.findAll({
+        //     attributes: ['id', 'name']
+        // });
+        // const Expenses = await Expense.findAll({
+        //     attributes: ['userId', [sequelize.fn('sum', sequelize.col('expenses.amount')), 'totalExpense']],
+        //     group: ['userId']
+        // })
+        const leaderBoardOfUsers = await User.findAll({
+            attributes: ['id','name', [sequelize.fn('sum', sequelize.col('expenses.amount')), 'totalExpense']],
+            include: [{
+                model: Expense,
+                attributes: []
+            }],
+            group:['users.id'],
+            order:[['totalExpense','DESC']]
+        })
+        res.json(leaderBoardOfUsers)
     } catch (err) {
         console.log(err)
     }

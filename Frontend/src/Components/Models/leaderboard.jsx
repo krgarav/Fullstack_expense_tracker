@@ -7,7 +7,7 @@ const LeaderBoard = (props) => {
            {item.name}
         </Col>
         <Col xs={6} md={4}>
-           {item.totalExpense}
+           {item.totalExpense||0}
         </Col>
       </Row>
     );
