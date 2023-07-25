@@ -1,6 +1,7 @@
 const User = require("../Models/user")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Forgotpassword = require("../Models/forgotpassword");
 exports.authSignupPost = (req, res, next) => {
     const name = req.body.name
     const email = req.body.email
@@ -69,4 +70,30 @@ exports.authLoginPost = (req, res, next) => {
         }
     }
     postLogin();
+}
+
+exports.updatePassword = async (req, res) => {
+    const password = req.body.password;
+    const userId = req.body.userId;
+    try {
+        bcrypt.hash(password, 10, async (err, hash) => {
+            if (err) {
+                throw new Error(err)
+            }
+
+            const forgotTable = await Forgotpassword.findOne({ where: { id: userId } })
+            // console.log(forgotTable)
+            const clientId = forgotTable.userId;
+            await forgotTable.update({ isActive: false });
+            const user = await User.findOne({ where: { id: clientId } })
+            console.log(user)
+
+            await user.update({ password: hash });
+
+            res.status(200).json({ data: "success" });
+        })
+    } catch (err) {
+        res.status(500).json({ err: err })
+        console.log(err)
+    }
 }

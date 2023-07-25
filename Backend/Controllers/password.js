@@ -1,11 +1,18 @@
 const Sib = require('sib-api-v3-sdk');
-
+const Forgotpasswordrequests = require("../Models/forgotpassword");
+const User = require('../Models/user');
 exports.sendMail = async (req, res) => {
+    const receivedEmail = req.body.mail;
+
     try {
+        const user = await User.findOne({ where: { email: receivedEmail } })
+        console.log(user.id)
+        await Forgotpasswordrequests.create({ userId: user.id, isActive: true });
+        const requestUser = await Forgotpasswordrequests.findOne({ userId: user.id, isActive: true })
+        const forgotRequest = requestUser.id;
         const client = Sib.ApiClient.instance;
         const apiKey = client.authentications['api-key'];
         apiKey.apiKey = process.env.NEW_KEY;
-        const receivedEmail = req.body.mail;
         const tranEmailApi = new Sib.TransactionalEmailsApi();
         const sender = {
             email: 'gaurvkmr1997@gmail.com'
@@ -17,12 +24,25 @@ exports.sendMail = async (req, res) => {
             sender,
             to: receivers,
             subject: "Reset password link",
-            textContent: 'Click here for getting link for forgotted password'
+            // textContent: 'khfkjsadhfkjhsak;df hkhsdkfjh;as',
+            htmlContent: `<a href='http://localhost:3000/password/resetpassword/${forgotRequest}'>click here</a>`
         });
-        console.log(result)
         res.status(200).json({ message: "Sent message successfully" })
     } catch (err) {
         res.status(500).json({ err: err })
         console.log(err)
     }
+}
+
+exports.resetMail = async (req, res) => {
+    const userId = req.params.userId;
+    const requestUser = await Forgotpasswordrequests.findOne({ userId: userId, isActive: true });
+    res.set('Location', `http://localhost:5173/resetpassword/${userId}`);
+
+    // Use status code 302 (Found) for temporary redirect
+    res.status(302).send();
+
+    // res.set()
+    // res.send("<form> <label<input type='text' /><form/>")
+
 }
