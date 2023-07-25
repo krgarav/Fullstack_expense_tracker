@@ -1,9 +1,7 @@
-
 .formBox {
   background-color: rgb(116, 116, 133);
   padding: 10px 50px;
   border-radius: 5px;
-
 }
 .formBox h3 {
   text-align: center;
@@ -25,7 +23,7 @@
   justify-content: center;
   margin: 20vh 40vw;
 }
-.forgot{
+.forgot {
   cursor: pointer;
   /* border-radius: 5px; */
   text-align: center;

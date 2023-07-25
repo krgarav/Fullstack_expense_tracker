@@ -1,6 +1,4 @@
-
 const Expense = require("../Models/expense");
-const User = require("../Models/user");
 const sequelize = require("../Util/database");
 
 exports.postExpense = async (req, res, next) => {
@@ -24,7 +22,7 @@ exports.postExpense = async (req, res, next) => {
     postData();
 };
 
-exports.getExpenses = (req, res, next) => {
+exports.getExpenses = (req, res) => {
     const getData = async () => {
         const expenses = await Expense.findAll({ where: { userId: req.user.id } });
         res.status(201).json(expenses);
@@ -32,7 +30,7 @@ exports.getExpenses = (req, res, next) => {
     getData();
 }
 
-exports.deleteExpense = (req, res, next) => {
+exports.deleteExpense = (req, res) => {
     const expenseId = +req.params.expenseId;
 
     const deleteExpense = async () => {

@@ -41,21 +41,14 @@ const updateStatus = async (req, res) => {
 
 const showLeaderBoard = async (req, res) => {
     try {
-        // const users = await User.findAll({
-        //     attributes: ['id', 'name']
-        // });
-        // const Expenses = await Expense.findAll({
-        //     attributes: ['userId', [sequelize.fn('sum', sequelize.col('expenses.amount')), 'totalExpense']],
-        //     group: ['userId']
-        // })
         const leaderBoardOfUsers = await User.findAll({
-            attributes: ['id','name', [sequelize.fn('sum', sequelize.col('expenses.amount')), 'totalExpense']],
+            attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('expenses.amount')), 'totalExpense']],
             include: [{
                 model: Expense,
                 attributes: []
             }],
-            group:['users.id'],
-            order:[['totalExpense','DESC']]
+            group: ['users.id'],
+            order: [['totalExpense', 'DESC']]
         })
         res.json(leaderBoardOfUsers)
     } catch (err) {
