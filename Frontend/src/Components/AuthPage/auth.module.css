@@ -25,3 +25,12 @@
   justify-content: center;
   margin: 20vh 40vw;
 }
+.forgot{
+  cursor: pointer;
+  /* border-radius: 5px; */
+  text-align: center;
+}
+.forgot:hover {
+  color: blue;
+  text-decoration: underline;
+}
