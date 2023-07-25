@@ -5,7 +5,8 @@ const app = express();
 
 const authRoutes = require("./Routes/auth");
 const expenseRoutes = require("./Routes/expense");
-const purchaseRoutes = require("./Routes/purchase")
+const purchaseRoutes = require("./Routes/purchase");
+const passwordRoutes= require("./Routes/password")
 const sequelize = require("./Util/database");
 const User = require("./Models/user");
 const Expense = require("./Models/expense");
@@ -21,7 +22,8 @@ app.use(cors())
 
 app.use("/user/", authRoutes);
 app.use("/expense/", expenseRoutes);
-app.use("/purchase/", purchaseRoutes)
+app.use("/purchase/", purchaseRoutes);
+app.use("/password/",passwordRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
