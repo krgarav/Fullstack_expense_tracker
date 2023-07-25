@@ -1,16 +1,30 @@
 import axios from "axios";
 import { Fragment, useRef } from "react";
 import { Form, Button, Container } from "react-bootstrap";
+import { useNavigate } from "react-router";
 
 const ForgotPassword = () => {
   const mailRef = useRef();
+  const navigate = useNavigate();
   const submitHandler = (event) => {
     event.preventDefault();
     const enteredMail = mailRef.current.value;
-    console.log(mailRef.current.value);
-    axios.post("http://localhost:3000/password/forgotpassword", {
-      mail: enteredMail,
-    });
+    const sendRequest = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/password/forgotpassword",
+          {
+            mail: enteredMail,
+          }
+        );
+        if (response.ok) {
+          navigate("/", { replace: true });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    sendRequest();
   };
 
   return (
