@@ -82,7 +82,6 @@ exports.updatePassword = async (req, res) => {
             }
 
             const forgotTable = await Forgotpassword.findOne({ where: { id: userId } })
-            // console.log(forgotTable)
             const clientId = forgotTable.userId;
             await forgotTable.update({ isActive: false });
             const user = await User.findOne({ where: { id: clientId } })

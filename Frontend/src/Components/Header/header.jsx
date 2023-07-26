@@ -4,11 +4,12 @@ import { Nav, Container, Button, Navbar, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import LeaderBoard from "../Models/leaderboard";
-
+import { NavLink } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 const Header = () => {
   const [state, setState] = useState(false);
   const [modalShow, setModalShow] = useState(false);
-  const [users,setUsers]=useState([])
+  const [users, setUsers] = useState([]);
   useEffect(() => {
     const status = localStorage.getItem("userStatus");
     if (status === "true") {
@@ -61,17 +62,17 @@ const Header = () => {
     getPremium();
   };
   const leaderboardHandler = () => {
-   
     const getData = async () => {
       const res = await axios.get(
         "http://localhost:3000/purchase/premium/showLeaderBoard"
       );
       console.log(res.data);
-      setUsers(res.data)
+      setUsers(res.data);
       setModalShow(true);
     };
     getData();
   };
+  const url = `/reportgeneration/${state}`;
   return (
     <Fragment>
       <Navbar
@@ -81,7 +82,9 @@ const Header = () => {
         className="bg-body-tertiary"
       >
         <Container fluid>
-          <Navbar.Brand href="#">Home</Navbar.Brand>
+          <LinkContainer to="/expenses">
+            <Navbar.Brand as="a">Home</Navbar.Brand>
+          </LinkContainer>
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
             <Nav
@@ -89,12 +92,9 @@ const Header = () => {
               style={{ maxHeight: "100px" }}
               navbarScroll
             >
-              <Nav.Link href="#action1">Home</Nav.Link>
-              <Nav.Link href="#action2">Link</Nav.Link>
-
-              <Nav.Link href="#" disabled>
-                Link
-              </Nav.Link>
+              <LinkContainer to={url}>
+                <Nav.Link as="a">Day to Day Expenses</Nav.Link>
+              </LinkContainer>
             </Nav>
             <div className={btn}>
               {!state && (
@@ -105,8 +105,10 @@ const Header = () => {
 
               {state && (
                 <Button variant="info">
-                  You are premium user{" "}
-                  <Button onClick={leaderboardHandler}>Show LeaderBoard</Button>{" "}
+                  You are premium user
+                  <Button onClick={leaderboardHandler}>
+                    Show LeaderBoard
+                  </Button>{" "}
                 </Button>
               )}
               <Button variant="outline-warning" onClick={logoutHandler}>
@@ -116,8 +118,12 @@ const Header = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <h1 className={classes.header}>Expense Tracker</h1>
-      <LeaderBoard show={modalShow} item={users} onHide={() => setModalShow(false)}/>
+
+      <LeaderBoard
+        show={modalShow}
+        item={users}
+        onHide={() => setModalShow(false)}
+      />
     </Fragment>
   );
 };

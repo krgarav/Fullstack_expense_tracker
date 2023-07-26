@@ -1,19 +1,29 @@
 import axios from "axios";
 import { Fragment, useRef } from "react";
 import { Form, Button, Container } from "react-bootstrap";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const Password = () => {
   const passwordRef = useRef();
   const { userId } = useParams();
+  const navigate = useNavigate();
   const submitHandler = (event) => {
     event.preventDefault();
     const enteredPassword = passwordRef.current.value;
     console.log(enteredPassword, userId);
-    axios.post("http://localhost:3000/user/resetlink", {
-      password: enteredPassword,
-      userId,
-    });
+    const postPasswordRequest = async () => {
+      const response = await axios.post(
+        "http://localhost:3000/user/resetlink",
+        {
+          password: enteredPassword,
+          userId,
+        }
+      );
+      if (response.ok) {
+        navigate("/", { replace: true });
+      }
+    };
+    postPasswordRequest();
   };
 
   return (

@@ -149,6 +149,7 @@ const Expense = () => {
   return (
     <Fragment>
       <Header />
+      <h1 className="header">Expense Tracker</h1>
       <div className="formdiv">
         <form onSubmit={submitHandler}>
           <label htmlFor="pqty">Choose Expense Amount : </label>

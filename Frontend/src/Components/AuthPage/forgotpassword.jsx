@@ -17,10 +17,13 @@ const ForgotPassword = () => {
             mail: enteredMail,
           }
         );
-        if (response.ok) {
+
+        if (response.status === 200) {
+          alert("Reset password link sent to your mail successfully");
           navigate("/", { replace: true });
         }
       } catch (err) {
+        alert("Something went wrong");
         console.log(err);
       }
     };
