@@ -4,7 +4,6 @@ import { Nav, Container, Button, Navbar, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import LeaderBoard from "../Models/leaderboard";
-import { NavLink } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 const Header = () => {
   const [state, setState] = useState(false);
@@ -19,7 +18,7 @@ const Header = () => {
   const navigate = useNavigate();
   const btn = `${classes.navbtn} d-flex`;
   const logoutHandler = () => {
-    localStorage.removeItem("token");
+    localStorage.clear();
     navigate("/", { replace: true });
   };
   const premiumHandler = () => {
@@ -48,6 +47,7 @@ const Header = () => {
           );
 
           alert("you are premium user now");
+          localStorage.setItem("userStatus", true);
           setState(true);
         },
       };
@@ -80,11 +80,12 @@ const Header = () => {
         bg="dark"
         data-bs-theme="dark"
         className="bg-body-tertiary"
+        sticky="top"
       >
         <Container fluid>
-          <LinkContainer to="/expenses">
+          {/* <LinkContainer to="/expenses">
             <Navbar.Brand as="a">Home</Navbar.Brand>
-          </LinkContainer>
+          </LinkContainer> */}
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
             <Nav
@@ -92,6 +93,9 @@ const Header = () => {
               style={{ maxHeight: "100px" }}
               navbarScroll
             >
+              <LinkContainer to="/expenses">
+                <Nav.Link as="a">Home</Nav.Link>
+              </LinkContainer>
               <LinkContainer to={url}>
                 <Nav.Link as="a">Day to Day Expenses</Nav.Link>
               </LinkContainer>
@@ -104,12 +108,10 @@ const Header = () => {
               )}
 
               {state && (
-                <Button variant="info">
+                <span>
                   You are premium user
-                  <Button onClick={leaderboardHandler}>
-                    Show LeaderBoard
-                  </Button>{" "}
-                </Button>
+                  <Button onClick={leaderboardHandler}>Show LeaderBoard</Button>
+                </span>
               )}
               <Button variant="outline-warning" onClick={logoutHandler}>
                 Logout

@@ -1,6 +1,8 @@
 const Expense = require("../Models/expense");
 const sequelize = require("../Util/database");
-
+const Userservices = require("../Services/userservices");
+const S3services = require("../Services/s3services");
+const Expensedownload = require("../Models/downloadexpense");
 exports.postExpense = async (req, res, next) => {
     const { quantity, description, category } = req.body;
 
@@ -50,4 +52,26 @@ exports.deleteExpense = (req, res) => {
         }
     }
     deleteExpense();
+}
+
+exports.downloadExpense = async (req, res) => {
+    try {
+        const expenses = await Userservices.getExpenses(req);
+        const stringifiedExpenses = JSON.stringify(expenses);
+        const userId = req.user.id;
+        const fileName = `Expense${userId}/${new Date()}.txt`;
+        const fileURL = await S3services.uploadToS3(stringifiedExpenses, fileName);
+        await req.user.createExpensesdownload({ url: fileURL })
+        res.status(200).json({ fileURL: fileURL, success: true })
+    } catch (err) {
+        res.status(401).json({ success: false })
+    }
+}
+exports.allDownloadedExpenses = async (req, res) => {
+    try {
+        const allDownloadedExpenses = await Expensedownload.findAll({where:{userId:req.user.id}});
+        res.status(200).json({data:allDownloadedExpenses,success:true});  
+    } catch (err) {
+        console.log(err);
+    }
 }
