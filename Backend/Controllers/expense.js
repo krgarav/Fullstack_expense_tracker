@@ -23,11 +23,34 @@ exports.postExpense = async (req, res, next) => {
     }
     postData();
 };
-
+exports.getExpensesCount = async (req, res) => {
+    const expenses = await Expense.findAll({ where: { userId: req.user.id } });
+    console.log(expenses.length)
+    const length = Math.ceil(+expenses.length / 4);
+    // console.log(length)
+    res.status(200).json({ pages: length });
+}
 exports.getExpenses = (req, res) => {
+    const limit = +req.params.limit;
     const getData = async () => {
+        const arr = [];
+        let endingValue = 4;
         const expenses = await Expense.findAll({ where: { userId: req.user.id } });
-        res.status(201).json(expenses);
+        if (limit === 1) {
+            initialValue = 0
+            endingValue = limit + 4 - 1
+        } else {
+            initialValue = (limit - 1) * 4; ;
+            endingValue = limit * 4;
+        }
+
+        for (let i = initialValue; i < endingValue; i++) {
+            if (expenses[i] !== undefined) {
+                arr.push(expenses[i]);
+            }
+        }
+        // console.log(initialValue,endingValue)
+        res.status(201).json(arr);
     }
     getData();
 }
@@ -69,8 +92,8 @@ exports.downloadExpense = async (req, res) => {
 }
 exports.allDownloadedExpenses = async (req, res) => {
     try {
-        const allDownloadedExpenses = await Expensedownload.findAll({where:{userId:req.user.id}});
-        res.status(200).json({data:allDownloadedExpenses,success:true});  
+        const allDownloadedExpenses = await Expensedownload.findAll({ where: { userId: req.user.id } });
+        res.status(200).json({ data: allDownloadedExpenses, success: true });
     } catch (err) {
         console.log(err);
     }

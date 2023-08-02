@@ -1,27 +1,33 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { Button } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
 import "./expense.css";
 import { useNavigate } from "react-router";
 import Header from "../Header/header";
+import Pagechanger from "../Models/pagination";
+import { expenseAction } from "../../Store/expense-reducer";
 const Expense = () => {
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [state, setState] = useState(true);
   const navigate = useNavigate();
   const amountRef = useRef();
   const descriptionRef = useRef();
   const categoryRef = useRef();
+  const dispatch = useDispatch();
+  const listItem = useSelector((state) => state.expense.expense);
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:3000/expense/get-expenses",
+        "http://localhost:3000/expense/get-expenses/1",
         {
           headers: { Authorisation: token },
         }
       );
       const data = await response.json();
-      setData(data);
+      console.log(data)
+      dispatch(expenseAction.addExpense(data));
+      // setData(data);
     };
     fetchData();
     const handleTabClose = (event) => {
@@ -37,7 +43,8 @@ const Expense = () => {
     return () => {
       window.removeEventListener("beforeunload", handleTabClose);
     };
-  }, [state]);
+  }, []);
+  console.log(listItem);
   const editHandler = (e) => {
     const amount = e.amount;
     const description = e.description;
@@ -88,7 +95,7 @@ const Expense = () => {
     };
     deleteProduct();
   };
-  const liElement = data.map((item) => {
+  const liElement = listItem.map((item) => {
     return (
       <li key={item.id}>
         <span className="box-div">
@@ -200,6 +207,7 @@ const Expense = () => {
         )}
         {liElement.length === 0 && <h2>No Products Available</h2>}
       </div>
+      <Pagechanger />
     </Fragment>
   );
 };
