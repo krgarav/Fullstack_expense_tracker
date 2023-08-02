@@ -24,32 +24,31 @@ exports.postExpense = async (req, res, next) => {
     postData();
 };
 exports.getExpensesCount = async (req, res) => {
+    const count = req.params.count;
     const expenses = await Expense.findAll({ where: { userId: req.user.id } });
-    console.log(expenses.length)
-    const length = Math.ceil(+expenses.length / 4);
-    // console.log(length)
+
+    const length = Math.ceil(+expenses.length / count);
+
     res.status(200).json({ pages: length });
 }
 exports.getExpenses = (req, res) => {
-    const limit = +req.params.limit;
+
+    const limit = +req.query.e;
+    const row = +req.query.row;
+
+    console.log("rows" + limit, row)
     const getData = async () => {
         const arr = [];
-        let endingValue = 4;
+        let endingValue;
+        let initialValue;
         const expenses = await Expense.findAll({ where: { userId: req.user.id } });
-        if (limit === 1) {
-            initialValue = 0
-            endingValue = limit + 4 - 1
-        } else {
-            initialValue = (limit - 1) * 4; ;
-            endingValue = limit * 4;
-        }
-
+        initialValue = (limit - 1) * row;;
+        endingValue = limit * row;
         for (let i = initialValue; i < endingValue; i++) {
             if (expenses[i] !== undefined) {
                 arr.push(expenses[i]);
             }
         }
-        // console.log(initialValue,endingValue)
         res.status(201).json(arr);
     }
     getData();

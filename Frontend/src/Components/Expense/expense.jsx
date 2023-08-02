@@ -17,17 +17,15 @@ const Expense = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
-
+      const row = localStorage.getItem("preferencerow");
       const response = await fetch(
-        "http://localhost:3000/expense/get-expenses/1",
+        `http://localhost:3000/expense/get-expenses?e=1&row=${row}`,
         {
           headers: { Authorisation: token },
         }
       );
       const data = await response.json();
-      console.log(data)
       dispatch(expenseAction.addExpense(data));
-      // setData(data);
     };
     fetchData();
     const handleTabClose = (event) => {
@@ -207,7 +205,9 @@ const Expense = () => {
         )}
         {liElement.length === 0 && <h2>No Products Available</h2>}
       </div>
-      <Pagechanger />
+      <div className="pagechanger">
+        <Pagechanger />
+      </div>
     </Fragment>
   );
 };
