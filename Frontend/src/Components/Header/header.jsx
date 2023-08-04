@@ -66,7 +66,6 @@ const Header = () => {
       const res = await axios.get(
         "http://localhost:3000/purchase/premium/showLeaderBoard"
       );
-      console.log(res.data);
       setUsers(res.data);
       setModalShow(true);
     };
@@ -83,9 +82,6 @@ const Header = () => {
         sticky="top"
       >
         <Container fluid>
-          {/* <LinkContainer to="/expenses">
-            <Navbar.Brand as="a">Home</Navbar.Brand>
-          </LinkContainer> */}
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
             <Nav
@@ -109,7 +105,7 @@ const Header = () => {
 
               {state && (
                 <span>
-                  You are premium user
+                  <span className={classes.text}>You are premium user</span>
                   <Button onClick={leaderboardHandler}>Show LeaderBoard</Button>
                 </span>
               )}

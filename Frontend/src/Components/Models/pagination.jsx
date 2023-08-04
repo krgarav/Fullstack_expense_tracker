@@ -3,72 +3,86 @@ import React, { Fragment, useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { expenseAction } from "../../Store/expense-reducer";
-import { useSelector, useDispatch } from "react-redux";
-import { Form } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+
 const Pagechanger = () => {
   const [selectedPage, setSelectedPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [alltabs, setAllTabs] = useState([]);
   const dispatch = useDispatch();
+
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const row = localStorage.getItem("preferencerow");
+    const row = localStorage.getItem("preferencerow") || 5;
     const getCount = async () => {
-      const response = await axios.get(
-        "http://localhost:3000/expense/get-expense-count/" + row,
-        {
-          headers: { Authorisation: token },
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/expense/get-expense-count/" + row,
+          {
+            headers: { Authorisation: token },
+          }
+        );
+        const pages = await response.data.pages;
+        setTotalPages(pages);
+        let items = [];
+        for (let number = 1; number <= totalPages; number++) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              active={number === selectedPage}
+              onClick={() => pageHandler(number)}
+            >
+              {number}
+            </Pagination.Item>
+          );
         }
-      );
-      const pages = response.data.pages;
-      setTotalPages(pages);
+        setAllTabs(items);
+      } catch (err) {
+        console.log(err);
+      }
     };
     getCount();
-  }, []);
+  }, [totalPages, selectedPage]);
 
   const pageHandler = (e) => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      const row = localStorage.getItem("preferencerow");
-      const response = await fetch(
-        `http://localhost:3000/expense/get-expenses?e=${e}&row=${row}`,
-        {
-          headers: { Authorisation: token },
-        }
-      );
-      const data = await response.json();
-      dispatch(expenseAction.addExpense(data));
+      try {
+        const token = localStorage.getItem("token");
+        const row = localStorage.getItem("preferencerow") || 5;
+        const response = await fetch(
+          `http://localhost:3000/expense/get-expenses?e=${e}&row=${row}`,
+          {
+            headers: { Authorisation: token },
+          }
+        );
+        const data = await response.json();
+        dispatch(expenseAction.addExpense(data));
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchData();
     setSelectedPage(e);
   };
-  let items = [];
-  for (let number = 1; number <= totalPages; number++) {
-    items.push(
-      <Pagination.Item
-        key={number}
-        active={number === selectedPage}
-        onClick={() => pageHandler(number)}
-      >
-        {number}
-      </Pagination.Item>
-    );
-  }
   const rowHandler = (event) => {
     const row = event.target.value;
     localStorage.setItem("preferencerow", row);
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `http://localhost:3000/expense/get-expenses?e=${selectedPage}&row=${row}`,
-        {
-          headers: { Authorisation: token },
-        }
-      );
-      const data = await response.json();
-      dispatch(expenseAction.addExpense(data));
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `http://localhost:3000/expense/get-expenses?e=${selectedPage}&row=${row}`,
+          {
+            headers: { Authorisation: token },
+          }
+        );
+        const data = await response.json();
+        dispatch(expenseAction.addExpense(data));
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchData();
-
   };
   return (
     <Fragment>
@@ -83,7 +97,7 @@ const Pagechanger = () => {
       <Pagination>
         <Pagination.First />
         <Pagination.Prev />
-        {items}
+        {alltabs}
         <Pagination.Next />
         <Pagination.Last />
       </Pagination>

@@ -25,7 +25,6 @@ const Auth = () => {
   const submitHandler = (event) => {
     event.preventDefault();
     if (state) {
-      //login
       const Email = enteredEmail.current.value;
       const Password = enteredPassword.current.value;
       const loginObj = {
@@ -86,55 +85,61 @@ const Auth = () => {
       postSignupData();
     }
   };
-  const forgotPageHandler=()=>{
-    navigate("/forgotpassword")
-  }
+  const forgotPageHandler = () => {
+    navigate("/forgotpassword");
+  };
   return (
     <Fragment>
       <div className={classes.parent}>
-        <div className={classes.formBox}>
-          <h3>{state ? "Login" : "Signup"}</h3>
-          <Form onSubmit={submitHandler}>
-            {!state && (
-              <Form.Group className="mb-3" controlId="formBasicName">
-                <Form.Label>Name</Form.Label>
+        <div className={classes.childBox}>
+          <div className={classes.formBox}>
+            <h3>{state ? "Login" : "Signup"}</h3>
+            <Form onSubmit={submitHandler}>
+              {!state && (
+                <Form.Group className="mb-3" controlId="formBasicName">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter your name"
+                    ref={enteredName}
+                    required
+                  />
+                </Form.Group>
+              )}
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Email address</Form.Label>
                 <Form.Control
-                  type="text"
-                  placeholder="Enter your name"
-                  ref={enteredName}
+                  type="email"
+                  placeholder="Enter email"
+                  ref={enteredEmail}
                   required
                 />
               </Form.Group>
-            )}
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                ref={enteredEmail}
-                required
-              />
-            </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                ref={enteredPassword}
-                required
-              />
-            </Form.Group>
-            {state && <p className={classes.forgot} onClick={forgotPageHandler}>forgot Password ?</p>}
-            <Button variant="primary" type="submit">
-              {state ? "Login" : "Sign up"}
-            </Button>
-          </Form>
-        </div>
-        <div>
-          <p className={classes.toggler} onClick={stateHandler}>
-            {state ? "New -user Signup" : "Existing user - Login"}
-          </p>
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  ref={enteredPassword}
+                  required
+                />
+              </Form.Group>
+              {state && (
+                <p className={classes.forgot} onClick={forgotPageHandler}>
+                  Forgot Password ?
+                </p>
+              )}
+              <button className={classes.submitButton} type="submit">
+                {state ? "Login" : "Sign up"}
+              </button>
+            </Form>
+          </div>
+          <div>
+            <p className={classes.toggler} onClick={stateHandler}>
+              {state ? "New -user Signup" : "Existing user - Login"}
+            </p>
+          </div>
         </div>
       </div>
     </Fragment>

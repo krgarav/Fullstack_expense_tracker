@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import "./expense.css";
+import classes from "./expense.module.css";
 import { useNavigate } from "react-router";
 import Header from "../Header/header";
 import Pagechanger from "../Models/pagination";
@@ -19,7 +19,7 @@ const Expense = () => {
       const token = localStorage.getItem("token");
       const row = localStorage.getItem("preferencerow");
       const response = await fetch(
-        `http://localhost:3000/expense/get-expenses?e=1&row=${row}`,
+        `http://localhost:3000/expense/get-expenses?e=1&row=${row || 5}`,
         {
           headers: { Authorisation: token },
         }
@@ -41,8 +41,7 @@ const Expense = () => {
     return () => {
       window.removeEventListener("beforeunload", handleTabClose);
     };
-  }, []);
-  console.log(listItem);
+  }, [state]);
   const editHandler = (e) => {
     const amount = e.amount;
     const description = e.description;
@@ -50,7 +49,6 @@ const Expense = () => {
     const id = e.id;
     const update = async () => {
       const token = localStorage.getItem("token");
-
       const response = await fetch(
         "http://localhost:3000/expense/delete-expense/" + id,
         {
@@ -96,20 +94,20 @@ const Expense = () => {
   const liElement = listItem.map((item) => {
     return (
       <li key={item.id}>
-        <span className="box-div">
+        <span className={classes["box-div"]}>
           <h4>Rs {item.amount}/-</h4>
         </span>
-        <span className="box-div">
+        <span className={classes["box-div"]}>
           <p>{item.description}</p>
         </span>
-        <span className="box-div">
+        <span className={classes["box-div"]}>
           <p> {item.category} </p>
         </span>
-        <span className="box-div">
+        <span className={classes["box-div"]}>
           <button onClick={() => editHandler(item)}> Edit</button>
         </span>
-        <span className="box-div">
-          <button className="btn-danger" onClick={() => deleteHandler(item.id)}>
+        <span className={classes["box-div"]}>
+          <button className={classes["btn-danger"]} onClick={() => deleteHandler(item.id)}>
             Delete
           </button>
         </span>
@@ -154,8 +152,8 @@ const Expense = () => {
   return (
     <Fragment>
       <Header />
-      <h1 className="header">Expense Tracker</h1>
-      <div className="formdiv">
+      <h1 className={classes.header}>Expense Tracker</h1>
+      <div className={classes.formdiv}>
         <form onSubmit={submitHandler}>
           <label htmlFor="pqty">Choose Expense Amount : </label>
           <input
@@ -182,22 +180,22 @@ const Expense = () => {
           <button type="submit">Add Item</button>
         </form>
       </div>
-      <div className="list">
+      <div className={classes.list}>
         {liElement.length > 0 && (
           <ul>
             <li>
-              <span className="box-div">
+              <span className={classes["box-div"]}>
                 <h3>Amount</h3>
               </span>
-              <span className="box-div">
+              <span className={classes["box-div"]}>
                 <h3>Description</h3>
               </span>
-              <span className="box-div">
+              <span className={classes["box-div"]}>
                 <h3>Category</h3>
               </span>
 
-              <span className="box-div"></span>
-              <span className="box-div"></span>
+              <span className={classes["box-div"]}></span>
+              <span className={classes["box-div"]}></span>
             </li>
             <hr />
             {liElement}
@@ -205,7 +203,7 @@ const Expense = () => {
         )}
         {liElement.length === 0 && <h2>No Products Available</h2>}
       </div>
-      <div className="pagechanger">
+      <div className={classes.pagechanger}>
         <Pagechanger />
       </div>
     </Fragment>

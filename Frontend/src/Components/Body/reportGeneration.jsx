@@ -14,7 +14,7 @@ const ReportGeneration = () => {
     const expense = async () => {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:3000/expense/get-expenses",
+        "http://localhost:3000/expense/get-all-expenses",
         {
           headers: { Authorisation: token },
         }

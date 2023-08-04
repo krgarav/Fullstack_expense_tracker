@@ -26,8 +26,8 @@ exports.postExpense = async (req, res, next) => {
 exports.getExpensesCount = async (req, res) => {
     const count = req.params.count;
     const expenses = await Expense.findAll({ where: { userId: req.user.id } });
-
-    const length = Math.ceil(+expenses.length / count);
+console.log(count)
+    const length =  Math.ceil(+expenses.length / count);
 
     res.status(200).json({ pages: length });
 }
@@ -36,7 +36,6 @@ exports.getExpenses = (req, res) => {
     const limit = +req.query.e;
     const row = +req.query.row;
 
-    console.log("rows" + limit, row)
     const getData = async () => {
         const arr = [];
         let endingValue;
@@ -54,6 +53,10 @@ exports.getExpenses = (req, res) => {
     getData();
 }
 
+exports.getAllExpenses = async (req, res) => {
+    const expenses = await Expense.findAll({ where: { userId: req.user.id } });
+    res.status(200).json(expenses)
+}
 exports.deleteExpense = (req, res) => {
     const expenseId = +req.params.expenseId;
 
